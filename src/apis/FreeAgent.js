@@ -2,18 +2,21 @@
 export const getFAAllRecords = async (FAClient, appName) => {
     try {
         let data = [];
-        const response = await new Promise((resolve, reject) => {
-            FAClient.listEntityValues({
-                entity: appName,
-            }, (response) => {
-                console.log('Connection successful: ', response);
-                if (response) {
-                    resolve(response);
-                } else {
-                    reject("No response from server");
-                }
-            });
-        });
+        // const response = await new Promise((resolve, reject) => {
+        //     FAClient.listEntityValues({
+        //         entity: appName,
+        //     }, (response) => {
+        //         console.log('Connection successful: ', response);
+        //         if (response) {
+        //             resolve(response);
+        //         } else {
+        //             reject("No response from server");
+        //         }
+        //     });
+        // });
+
+        const response = await FAClient.listEntityValues({entity: appName})
+        console.log("response from FAClient: ",response)
 
         response.map(record => {
             let rowData = {id: record.id};

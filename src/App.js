@@ -19,6 +19,7 @@ function App() {
     if(process.env.NODE_ENV ==="development"){
         environment = "nlightn"
     }
+    window.environment = environment
     
     
     const [icons, setIcons] = useState([])

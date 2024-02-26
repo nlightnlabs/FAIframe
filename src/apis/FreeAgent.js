@@ -1,4 +1,3 @@
-
 //Standard function to get all records from a FreeAgent App
 export const getFAAllRecords = async (appName) => {
     const FAClient = window.FAClient;
@@ -180,4 +179,3 @@ export const deleteFARecord = async (appName, recordId) => {
         });
     });
 }
-

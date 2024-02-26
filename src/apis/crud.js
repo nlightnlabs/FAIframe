@@ -1,5 +1,6 @@
-import * as freeAgentApi from "./freeAgent.js";
+
 import * as nlightnApi from './nlightn.js';
+import * as freeAgentApi from "./freeAgent.js";
 
 export const getData = async (appName) => {
 

@@ -6,36 +6,20 @@ import * as freeAgentApi from "./apis/freeAgent.js";
 import * as nlightnApi from './apis/nlightn.js';
 import * as crud from "./apis/crud.js"
 import {toProperCase} from "./functions/formatValue.js";
-
 import {AgGridReact} from 'ag-grid-react';
 import 'ag-grid-community/styles//ag-grid.css';
 import 'ag-grid-community/styles//ag-theme-quartz.css';
 
-import Spinner from './components/Spinner.js'
 
 function App() {
 
+    // Set the environment to either freeagent or nlightn
     let environment = "freeagent"
     if(process.env.NODE_ENV ==="development"){
         environment = "nlightn"
     }
     window.environment = environment
     
-    
-    const [icons, setIcons] = useState([])
-    const [apps, setApps] = useState([])
-    const [appList, setAppList] = useState([])
-    
-    const [data, setData] = useState([]);
-    const [fields, setFields] = useState([])
-    const [appLabel, setAppLabel] = useState("")
-    const [appName, setAppName] = useState("")
-
-    const [formData, setFormData] = useState({})
-    const [selectedRecordId, setSelectedRecordId] = useState(null)
-
-    const [updatedForm, setUpdatedForm] = useState({})
-
     const useExternalScript = (src) => {
         useEffect(() => {
             const script = document.createElement('script');
@@ -101,6 +85,20 @@ function App() {
     //     console.log(response)
     //     return response
     // };
+
+    const [icons, setIcons] = useState([])
+    const [apps, setApps] = useState([])
+    const [appList, setAppList] = useState([])
+    
+    const [data, setData] = useState([]);
+    const [fields, setFields] = useState([])
+    const [appLabel, setAppLabel] = useState("")
+    const [appName, setAppName] = useState("")
+
+    const [formData, setFormData] = useState({})
+    const [selectedRecordId, setSelectedRecordId] = useState(null)
+
+    const [updatedForm, setUpdatedForm] = useState({})
 
     
     //Get data for all apps

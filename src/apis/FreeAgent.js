@@ -1,5 +1,6 @@
   //Standard function to get all records from a FreeAgent App
-export const getFAAllRecords = async (FAClient, appName) => {
+export const getFAAllRecords = async (appName) => {
+    const FAClient = window.FAClient;
     try {
         let data = [];
         const response = await new Promise((resolve, reject) => {
@@ -34,8 +35,8 @@ export const getFAAllRecords = async (FAClient, appName) => {
 
 
 //Standard function to get specific records from a FreeAgent App
-export const getFARecords = async (FAClient,appName, fields, filters, order, limit, offset, pattern)=>{
-
+export const getFARecords = async (appName, fields, filters, order, limit, offset, pattern)=>{
+    const FAClient = window.FAClient;
     try {
         let data = [];
         const response = await new Promise((resolve, reject) => {
@@ -76,7 +77,9 @@ export const getFARecords = async (FAClient,appName, fields, filters, order, lim
 }
 
 //Standard function to add a new record in a FreeAgent App
-export const addFARecord = async (FAClient,appName, formData)=>{
+export const addFARecord = async (appName, formData)=>{
+
+    const FAClient = window.FAClient;
 
    //Only send fields where the formData maps the fields in the app
    let updatedFormData = {};
@@ -115,8 +118,8 @@ export const addFARecord = async (FAClient,appName, formData)=>{
 
 
 // Update record in FreeAgent
-export const updateFARecord = async (FAClient, appName, recordId, formData) => {
-    
+export const updateFARecord = async (appName, recordId, formData) => {
+    const FAClient = window.FAClient;
     try {
         const response = await FAClient.updateEntity({
             entity: appName,
@@ -131,8 +134,8 @@ export const updateFARecord = async (FAClient, appName, recordId, formData) => {
 
 
 //Update or delete a record in a Free Agent app
-export const deleteFARecord = async (FAClient, appName, recordId) => { 
-
+export const deleteFARecord = async (appName, recordId) => { 
+    const FAClient = window.FAClient;
     try {
         const response =  await FAClient.updateEntity({
             entity: appName,
@@ -148,7 +151,8 @@ export const deleteFARecord = async (FAClient, appName, recordId) => {
 }
 
   //Standard function to get a user's data from FreeAgent
-  export const getCurrentUserData = (FAClient) => {
+  export const getCurrentUserData = () => {
+    const FAClient = window.FAClient;
     return new Promise((resolve, reject) => {
         FAClient.getUserInfo((response) => {
             console.log('User info: ', response);
@@ -162,7 +166,8 @@ export const deleteFARecord = async (FAClient, appName, recordId) => {
 }
 
   //Standard function to get a user's data from FreeAgent
-  export const getAllUserData = (FAClient) => {
+  export const getAllUserData = () => {
+    const FAClient = window.FAClient;
     return new Promise((resolve, reject) => {
         FAClient.getTeamMembers((response) => {
             console.log('All users: ', response);

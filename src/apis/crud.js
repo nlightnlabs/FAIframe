@@ -7,8 +7,7 @@ export const getData = async (appName) => {
 
     let response = []
     if(environment==="freeagent"){
-        const FAClient = window.FAClient;
-        response = await freeAgentApi.getFAAllRecords(FAClient, appName);
+        response = await freeAgentApi.getFAAllRecords(appName);
         return response
     }else{
         response = await nlightnApi.getTable(appName)
@@ -23,7 +22,6 @@ export const updateRecord = async (appName, selectedRecordId, formData) => {
 
     if(environment === "freeagent"){
         try {
-            const FAClient = window.FAClient;
             await freeAgentApi.updateFARecord(appName, selectedRecordId, formData)
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -40,10 +38,9 @@ export const addRecord = async (appName, updatedForm) => {
 
     if(environment == "freeagent"){
         try {
-            const FAClient = window.FAClient;
             delete updatedForm.id
             delete updatedForm.seq_id
-            await freeAgentApi.addFARecord(FAClient, appName, updatedForm)
+            await freeAgentApi.addFARecord(appName, updatedForm)
         } catch (error) {
             console.error("Error fetching data:", error);
         }
@@ -58,8 +55,7 @@ export const deleteRecord = async (appName, selectedRecordId) => {
 
     if(environment == "freeagent"){
         try {
-            const FAClient = window.FAClient;
-            await freeAgentApi.updateFARecord(FAClient, appName, selectedRecordId)
+            await freeAgentApi.updateFARecord(appName, selectedRecordId)
         } catch (error) {
             console.error("Error fetching data:", error);
         }

@@ -2,7 +2,7 @@
 import './App.css';
 import React, {useState, useEffect} from 'react'
 import "bootstrap/dist/css/bootstrap.min.css"
-import * as freeAgentApi from "./apis/FreeAgent.js";
+import * as freeAgentApi from "./apis/freeAgent.js";
 import * as nlightnApi from './apis/nlightn.js';
 import * as crud from "./apis/crud.js"
 import {toProperCase} from "./functions/formatValue.js";

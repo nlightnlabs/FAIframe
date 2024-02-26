@@ -34,12 +34,12 @@ function App() {
                 });
                 window.FAClient = FAClient;
 
-                FAClient.listEntityValues({
-                    entity: "icon",
-                }, (response) => {
-                    console.log('Successfully loaded icons: ', response);
-                    setIcons(response)
-                });
+                // FAClient.listEntityValues({
+                //     entity: "icon",
+                // }, (response) => {
+                //     console.log('Successfully loaded icons: ', response);
+                //     setIcons(response)
+                // });
             }, 500);
 
             return () => {

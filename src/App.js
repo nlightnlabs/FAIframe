@@ -4,6 +4,7 @@ import React, {useState, useEffect} from 'react'
 import "bootstrap/dist/css/bootstrap.min.css"
 import * as freeAgentApi from "./apis/FreeAgent.js";
 import * as nlightnApi from './apis/nlightn.js';
+import * as crud from "./functions/crud.js"
 import {toProperCase} from "./functions/formatValue.js";
 
 import {AgGridReact} from 'ag-grid-react';
@@ -29,13 +30,10 @@ function App() {
     const [appLabel, setAppLabel] = useState("")
     const [appName, setAppName] = useState("")
 
-    const [showForm, setShowForm] = useState(false)
     const [formData, setFormData] = useState({})
     const [selectedRecordId, setSelectedRecordId] = useState(null)
 
     const [updatedForm, setUpdatedForm] = useState({})
-
-    const [showLoadingModal, setShowLoadingModal] = useState(false)
 
     const useExternalScript = (src) => {
         useEffect(() => {
@@ -47,7 +45,7 @@ function App() {
             //Initialize the connection to the FreeAgent this step takes away the loading spinner
             setTimeout(() => {
                 const FAAppletClient = window.FAAppletClient;
-                
+
                 const FAClient = new FAAppletClient({
                     appletId: 'nlightn_iframe_template',
                 });
@@ -87,26 +85,34 @@ function App() {
     //     });
     // }
 
-    const getData = async (appName) => {
+    // const getData = async (appName) => {
 
-        let response = []
-        if(environment==="freeagent"){
-            const FAClient = window.FAClient;
-            response = await freeAgentApi.getFAAllRecords(FAClient, appName);
-            console.log("data retrieved: ", response)
-        }else{
+    //     let response = []
+    //     if(environment==="freeagent"){
+    //         const FAClient = window.FAClient;
+    //         response = await freeAgentApi.getFAAllRecords(FAClient, appName);
+    //         console.log("data retrieved: ", response)
+    //     }else{
             
-            response = await nlightnApi.getTable(appName)
-            return response.data
-        }
-        console.log(response)
-        return response
-    };
+    //         response = await nlightnApi.getTable(appName)
+    //         return response.data
+    //     }
+    //     console.log(response)
+    //     return response
+    // };
 
     
     //Get data for all apps
-    const getApps = async (appname)=>{
-        const response = await getData(appname)
+    const getApps = async ()=>{
+
+        let appname = null    
+        if(process.env.NODE_ENV==="production" && environment==="freeagent"){
+            appname = "web_app"
+        }else{
+            appname = "apps"
+        }
+
+        const response = await crud.getData(appname)
         setApps(response)
         let list = []
         response.map(item=>{
@@ -117,20 +123,14 @@ function App() {
 
     useEffect(()=>{
        setTimeout(()=>{
-            let appname = null    
-            if(process.env.NODE_ENV==="production" && environment==="freeagent"){
-                appname = "web_app"
-            }else{
-                appname = "apps"
-            }
-            getApps(appname)
+            getApps()
        },500) 
     },[])
 
 
     const handleGetData = async ()=>{
         
-        const response = await getData(appName)  
+        const response = await crud.getData(appName)  
         setData(response)
         
         let fieldList = []
@@ -145,77 +145,77 @@ function App() {
 
     
 
-    const updateRecord = async () => {
+    // const updateRecord = async () => {
 
-        if(environment === "freeagent"){
-            try {
-                const FAClient = window.FAClient;
-                freeAgentApi.updateFARecord(FAClient, appName, selectedRecordId, updatedForm)
-                setTimeout(async ()=>{
-                    const response = await getData(appName)  
-                    setData(response)
-                },1000)
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }else{
-            await nlightnApi.updateRecord(appName,"id", selectedRecordId,updatedForm)
-            const updatedData = await getData(appName)
-            setData(updatedData)
-        }
-    }
+    //     if(environment === "freeagent"){
+    //         try {
+    //             const FAClient = window.FAClient;
+    //             freeAgentApi.updateFARecord(FAClient, appName, selectedRecordId, updatedForm)
+    //             setTimeout(async ()=>{
+    //                 const response = await getData(appName)  
+    //                 setData(response)
+    //             },1000)
+    //         } catch (error) {
+    //             console.error("Error fetching data:", error);
+    //         }
+    //     }else{
+    //         await nlightnApi.updateRecord(appName,"id", selectedRecordId,updatedForm)
+    //         const updatedData = await getData(appName)
+    //         setData(updatedData)
+    //     }
+    // }
 
 
-    const addRecord = async () => {
-        if(environment == "freeagent"){
-            try {
-                const FAClient = window.FAClient;
+    // const addRecord = async () => {
+    //     if(environment == "freeagent"){
+    //         try {
+    //             const FAClient = window.FAClient;
     
-                delete updatedForm.id
-                delete updatedForm.seq_id
+    //             delete updatedForm.id
+    //             delete updatedForm.seq_id
     
-                await freeAgentApi.addFARecord(FAClient, appName, updatedForm)
-                setInterval(()=>{
-                    setShowLoadingModal(true)
-                },600)
-                setTimeout(async ()=>{
-                    const response = await getData(appName)  
-                    setData(response)
-                    setShowLoadingModal(false)
-                },500)
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }else{
-            const response = await nlightnApi.addRecord(appName, updatedForm)
-            const updatedData = await getData(appName)
-            console.log(updatedData)
-            setData(updatedData)
-        }
-    }
+    //             await freeAgentApi.addFARecord(FAClient, appName, updatedForm)
+    //             setInterval(()=>{
+    //                 setShowLoadingModal(true)
+    //             },600)
+    //             setTimeout(async ()=>{
+    //                 const response = await getData(appName)  
+    //                 setData(response)
+    //                 setShowLoadingModal(false)
+    //             },500)
+    //         } catch (error) {
+    //             console.error("Error fetching data:", error);
+    //         }
+    //     }else{
+    //         const response = await nlightnApi.addRecord(appName, updatedForm)
+    //         const updatedData = await getData(appName)
+    //         console.log(updatedData)
+    //         setData(updatedData)
+    //     }
+    // }
     
-    const deleteRecord = async () => {
-        if(environment == "freeagent"){
-            try {
-                const FAClient = window.FAClient;
-                await freeAgentApi.updateFARecord(FAClient, appName, selectedRecordId)
-                setInterval(()=>{
-                    setShowLoadingModal(true)
-                },600)
-                setTimeout(async ()=>{
-                    const response = await getData(appName)  
-                    setData(response)
-                    setShowLoadingModal(false)
-                },500)
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        }else{
-            await nlightnApi.deleteRecord(appName,"id",selectedRecordId)
-            const updatedData = await getData(appName)
-            setData(updatedData)
-        }
-    }
+    // const deleteRecord = async () => {
+    //     if(environment == "freeagent"){
+    //         try {
+    //             const FAClient = window.FAClient;
+    //             await freeAgentApi.updateFARecord(FAClient, appName, selectedRecordId)
+    //             setInterval(()=>{
+    //                 setShowLoadingModal(true)
+    //             },600)
+    //             setTimeout(async ()=>{
+    //                 const response = await getData(appName)  
+    //                 setData(response)
+    //                 setShowLoadingModal(false)
+    //             },500)
+    //         } catch (error) {
+    //             console.error("Error fetching data:", error);
+    //         }
+    //     }else{
+    //         await nlightnApi.deleteRecord(appName,"id",selectedRecordId)
+    //         const updatedData = await getData(appName)
+    //         setData(updatedData)
+    //     }
+    // }
 
     const pageStyle = {
         fontSize: "12px",
@@ -289,9 +289,9 @@ function App() {
                     }
                     <div className="d-flex justify-content-center mt-3">
                         <div className="btn-group">
-                            <button className="btn btn-success" onClick={(e)=>addRecord()}>Add</button>
-                            <button className="btn btn-warning" onClick={(e)=>updateRecord()}>Update</button>
-                            <button className="btn btn-danger" onClick={(e)=>deleteRecord()}>Delete</button>
+                            <button className="btn btn-success" onClick={(e)=>crud.addRecord(appName, updatedForm)}>Add</button>
+                            <button className="btn btn-warning" onClick={(e)=>crud.updateRecord(appName,selectedRecordId,updatedForm)}>Update</button>
+                            <button className="btn btn-danger" onClick={(e)=>crud.deleteRecord(appName,selectedRecordId)}>Delete</button>
                         </div>
                     </div>
                 </div> 

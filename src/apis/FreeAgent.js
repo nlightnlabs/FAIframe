@@ -15,9 +15,6 @@ export const getFAAllRecords = async (FAClient, appName) => {
             });
         });
 
-        // const response = await FAClient.listEntityValues({entity: appName})
-        // console.log("response from FAClient: ",response)
-
         response.map(record => {
             let rowData = {id: record.id};
             Object.entries(record.field_values).forEach(([key, value]) => {

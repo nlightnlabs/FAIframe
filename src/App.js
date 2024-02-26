@@ -19,6 +19,7 @@ function App() {
         environment = "nlightn"
     }
     
+    
     const [icons, setIcons] = useState([])
     const [apps, setApps] = useState([])
     const [appList, setAppList] = useState([])
@@ -43,8 +44,21 @@ function App() {
             script.async = true;
             document.body.appendChild(script);
 
+            //Initialize the connection to the FreeAgent this step takes away the loading spinner
             setTimeout(() => {
-                initializeFreeAgentConnection();
+                const FAAppletClient = window.FAAppletClient;
+                
+                const FAClient = new FAAppletClient({
+                    appletId: 'nlightn_iframe_template',
+                });
+                window.FAClient = FAClient;
+
+                FAClient.listEntityValues({
+                    entity: "icon",
+                }, (response) => {
+                    console.log('Successfully loaded icons: ', response);
+                    setIcons(response)
+                });
             }, 500);
 
             return () => {
@@ -56,22 +70,22 @@ function App() {
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
     
 
-    const initializeFreeAgentConnection = () => {
-        const FAAppletClient = window.FAAppletClient;
+    // const initializeFreeAgentConnection = () => {
+    //     const FAAppletClient = window.FAAppletClient;
         
-        //Initialize the connection to the FreeAgent this step takes away the loading spinner
-        const FAClient = new FAAppletClient({
-            appletId: 'nlightn_iframe_template',
-        });
-        window.FAClient = FAClient;
+    //     //Initialize the connection to the FreeAgent this step takes away the loading spinner
+    //     const FAClient = new FAAppletClient({
+    //         appletId: 'nlightn_iframe_template',
+    //     });
+    //     window.FAClient = FAClient;
 
-        FAClient.listEntityValues({
-            entity: "icon",
-        }, (response) => {
-            console.log('Successfully loaded icons: ', response);
-            setIcons(response)
-        });
-    }
+    //     FAClient.listEntityValues({
+    //         entity: "icon",
+    //     }, (response) => {
+    //         console.log('Successfully loaded icons: ', response);
+    //         setIcons(response)
+    //     });
+    // }
 
     const getData = async (appName) => {
 

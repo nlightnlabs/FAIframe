@@ -34,12 +34,6 @@ function App() {
                 });
                 window.FAClient = FAClient;
 
-                // FAClient.listEntityValues({
-                //     entity: "icon",
-                // }, (response) => {
-                //     console.log('Successfully loaded icons: ', response);
-                //     setIcons(response)
-                // });
             }, 500);
 
             return () => {
@@ -51,38 +45,6 @@ function App() {
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
     
 
-    // const initializeFreeAgentConnection = () => {
-    //     const FAAppletClient = window.FAAppletClient;
-        
-    //     //Initialize the connection to the FreeAgent this step takes away the loading spinner
-    //     const FAClient = new FAAppletClient({
-    //         appletId: 'nlightn_iframe_template',
-    //     });
-    //     window.FAClient = FAClient;
-
-    //     FAClient.listEntityValues({
-    //         entity: "icon",
-    //     }, (response) => {
-    //         console.log('Successfully loaded icons: ', response);
-    //         setIcons(response)
-    //     });
-    // }
-
-    // const getData = async (appName) => {
-
-    //     let response = []
-    //     if(environment==="freeagent"){
-    //         const FAClient = window.FAClient;
-    //         response = await freeAgentApi.getFAAllRecords(FAClient, appName);
-    //         console.log("data retrieved: ", response)
-    //     }else{
-            
-    //         response = await nlightnApi.getTable(appName)
-    //         return response.data
-    //     }
-    //     console.log(response)
-    //     return response
-    // };
 
     const [icons, setIcons] = useState([])
     const [apps, setApps] = useState([])

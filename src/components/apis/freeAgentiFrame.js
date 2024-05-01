@@ -1,13 +1,28 @@
-//Standard function to get all records from a FreeAgent App
+import axios from "axios";
+console.log(`Environment: ${process.env.NODE_ENV}`);
+
+export const baseURL = process.env.NODE_ENV==="production" ? "https://nlightnlabs.net" : "http://localhost:3001"
+
+export default axios.create({
+  baseURL,
+})
+
+export const dbUrl = axios.create({
+  baseURL,
+})  
+  
+  //Standard function to get all records from a FreeAgent App
 export const getFAAllRecords = async (appName) => {
-    const FAClient = window.FAClient;
+
+    const FAClient = window.FAClient
+
     try {
         let data = [];
         const response = await new Promise((resolve, reject) => {
             FAClient.listEntityValues({
                 entity: appName,
             }, (response) => {
-                console.log('Connection successful: ', response);
+                // console.log('Connection successful: ', response);
                 if (response) {
                     resolve(response);
                 } else {
@@ -36,7 +51,9 @@ export const getFAAllRecords = async (appName) => {
 
 //Standard function to get specific records from a FreeAgent App
 export const getFARecords = async (appName, fields, filters, order, limit, offset, pattern)=>{
-    const FAClient = window.FAClient;
+
+    const FAClient = window.FAClient
+
     try {
         let data = [];
         const response = await new Promise((resolve, reject) => {
@@ -79,7 +96,7 @@ export const getFARecords = async (appName, fields, filters, order, limit, offse
 //Standard function to add a new record in a FreeAgent App
 export const addFARecord = async (appName, formData)=>{
 
-    const FAClient = window.FAClient;
+    const FAClient = window.FAClient
 
    //Only send fields where the formData maps the fields in the app
    let updatedFormData = {};
@@ -119,7 +136,9 @@ export const addFARecord = async (appName, formData)=>{
 
 // Update record in FreeAgent
 export const updateFARecord = async (appName, recordId, formData) => {
-    const FAClient = window.FAClient;
+
+    const FAClient = window.FAClient
+    
     try {
         const response = await FAClient.updateEntity({
             entity: appName,
@@ -135,7 +154,9 @@ export const updateFARecord = async (appName, recordId, formData) => {
 
 //Update or delete a record in a Free Agent app
 export const deleteFARecord = async (appName, recordId) => { 
-    const FAClient = window.FAClient;
+
+    const FAClient = window.FAClient
+
     try {
         const response =  await FAClient.updateEntity({
             entity: appName,
@@ -151,31 +172,91 @@ export const deleteFARecord = async (appName, recordId) => {
 }
 
   //Standard function to get a user's data from FreeAgent
-  export const getCurrentUserData = () => {
-    const FAClient = window.FAClient;
-    return new Promise((resolve, reject) => {
-        FAClient.getUserInfo((response) => {
-            console.log('User info: ', response);
-            if (response) {
-                resolve(response);
-            } else {
-                reject("No response from server");
-            }
-        });
-    });
+  export const getCurrentFAUserData = async () => {
+    const FAClient = window.FAClient    
+    try{
+        const response = await FAClient.getUserInfo()    
+        console.log("FA client reponse for current user: ", response)
+        return response
+    }catch(error){
+        console.log(error)
+    }
+
+    // return new Promise((resolve, reject) => {
+    //     FAClient.getUserInfo((response) => {
+    //         console.log('Current user: ', response);
+    //         if (response) {
+    //             resolve(response);
+    //         } else {
+    //             reject("No response from server");
+    //         }
+    //     });
+    // });
+
 }
 
   //Standard function to get a user's data from FreeAgent
-  export const getAllUserData = () => {
-    const FAClient = window.FAClient;
-    return new Promise((resolve, reject) => {
-        FAClient.getTeamMembers((response) => {
-            console.log('All users: ', response);
-            if (response) {
-                resolve(response);
-            } else {
-                reject("No response from server");
-            }
+  export const getAllFAUserData = async () => {
+    const FAClient = window.FAClient
+   
+    try{
+        const response = await FAClient.getTeamMembers({
+            active: true,
+            order: [["full_name","ASC"]],
+            show_hidden_rows: false
+        })
+        console.log("FA client reponse for all users: ", response)
+        return response
+    }catch(error){
+        console.log(error)
+    }
+}
+
+
+//General Query
+export const queryFAAppRecords = async (appName)=>{
+    
+    // query should be an object like this:
+    // {query: "query{listEntityValues(entity: \"app_system_name_in_freeagent\", limit: 100){ entity_values {id, field_values} } }"}
+    const query = {query: `query{listEntityValues(entity: \"${appName}\", limit: 100){ entity_values {id, field_values} } }`}
+
+    try {
+        const response = await dbUrl.post("/freeAgent/query", query);
+        console.log(response);
+        const data = response.data;
+        const result = data.map(record => {
+            let rowData = { id: record.id };
+            Object.entries(record.field_values).forEach(([key, value]) => {
+                let val = value.display_value;
+                if (typeof val === "object") {
+                    val = JSON.stringify(val);
+                }
+                rowData = { ...rowData, [key]: val };
+            });
+            return rowData;
         });
-    });
+
+        return result;
+    } catch (error) {
+        throw new Error("Error fetching data: " + error);
+    }
+}
+
+export const queryFAUsers = async ()=>{
+
+    const query = {query: "query{getTeamMembers(active: true) {agents {id, full_name, teamId, email_address, access_level, status, job_title, roles {id, name, import, export, bulk_edit, bulk_delete, task_delete, is_admin}, subteams {id, name, description}}}}"}
+    
+    try {
+        const response = await dbUrl.post("/freeAgent/query",query);
+        console.log(response);
+        const data = response.data.getTeamMembers.agents;
+        return data;
+    } catch (error) {
+        throw new Error("Error fetching data: " + error);
+    }
+}
+
+export const navigateTo = (url)=>{
+    const FAClient = window.FAClient
+    FAClient.navigateTo(url)
 }

@@ -11,6 +11,10 @@ import 'ag-grid-community/styles//ag-theme-quartz.css';
 
 function App() {
 
+// ********************************************************************FREE AGENT CONNECTION***********************************************************
+    
+    // IMPORTANT:  Be sure to import crud functions file where data needs to be added, updated, or deleted and include freeagent api file in api folder
+
     // Set the environment to either freeagent or nlightn
     let environment = "freeagent"
     if(process.env.NODE_ENV ==="development"){
@@ -43,21 +47,18 @@ function App() {
     };
     //script to itnegrate FreeAgent library
     useExternalScript('https://freeagentsoftware1.gitlab.io/apps/google-maps/js/lib.js');
+
+
+// ********************************************************APP SPECIFIC CODE STARTS HERE******************************************************************************
     
-
-
-    const [icons, setIcons] = useState([])
     const [apps, setApps] = useState([])
     const [appList, setAppList] = useState([])
-    
     const [data, setData] = useState([]);
     const [fields, setFields] = useState([])
     const [appLabel, setAppLabel] = useState("")
     const [appName, setAppName] = useState("")
-
     const [formData, setFormData] = useState({})
     const [selectedRecordId, setSelectedRecordId] = useState(null)
-
     const [updatedForm, setUpdatedForm] = useState({})
 
     
@@ -102,79 +103,6 @@ function App() {
         setFields(fieldList);
     }
 
-    
-
-    // const updateRecord = async () => {
-
-    //     if(environment === "freeagent"){
-    //         try {
-    //             const FAClient = window.FAClient;
-    //             freeAgentApi.updateFARecord(FAClient, appName, selectedRecordId, updatedForm)
-    //             setTimeout(async ()=>{
-    //                 const response = await getData(appName)  
-    //                 setData(response)
-    //             },1000)
-    //         } catch (error) {
-    //             console.error("Error fetching data:", error);
-    //         }
-    //     }else{
-    //         await nlightnApi.updateRecord(appName,"id", selectedRecordId,updatedForm)
-    //         const updatedData = await getData(appName)
-    //         setData(updatedData)
-    //     }
-    // }
-
-
-    // const addRecord = async () => {
-    //     if(environment == "freeagent"){
-    //         try {
-    //             const FAClient = window.FAClient;
-    
-    //             delete updatedForm.id
-    //             delete updatedForm.seq_id
-    
-    //             await freeAgentApi.addFARecord(FAClient, appName, updatedForm)
-    //             setInterval(()=>{
-    //                 setShowLoadingModal(true)
-    //             },600)
-    //             setTimeout(async ()=>{
-    //                 const response = await getData(appName)  
-    //                 setData(response)
-    //                 setShowLoadingModal(false)
-    //             },500)
-    //         } catch (error) {
-    //             console.error("Error fetching data:", error);
-    //         }
-    //     }else{
-    //         const response = await nlightnApi.addRecord(appName, updatedForm)
-    //         const updatedData = await getData(appName)
-    //         console.log(updatedData)
-    //         setData(updatedData)
-    //     }
-    // }
-    
-    // const deleteRecord = async () => {
-    //     if(environment == "freeagent"){
-    //         try {
-    //             const FAClient = window.FAClient;
-    //             await freeAgentApi.updateFARecord(FAClient, appName, selectedRecordId)
-    //             setInterval(()=>{
-    //                 setShowLoadingModal(true)
-    //             },600)
-    //             setTimeout(async ()=>{
-    //                 const response = await getData(appName)  
-    //                 setData(response)
-    //                 setShowLoadingModal(false)
-    //             },500)
-    //         } catch (error) {
-    //             console.error("Error fetching data:", error);
-    //         }
-    //     }else{
-    //         await nlightnApi.deleteRecord(appName,"id",selectedRecordId)
-    //         const updatedData = await getData(appName)
-    //         setData(updatedData)
-    //     }
-    // }
 
     const pageStyle = {
         fontSize: "12px",
